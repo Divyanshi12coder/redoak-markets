@@ -38,7 +38,7 @@ export function MarketTicker() {
       </div>
     )
   }
-  const items = data.movers
+  const items = data?.movers ?? []
   if (items.length === 0) return null
 
   return (
