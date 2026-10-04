@@ -1,0 +1,47 @@
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: redoak
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-redoak_dev_password}
+      POSTGRES_DB: redoak
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U redoak -d redoak"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  backend:
+    build: ./backend
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      ENVIRONMENT: ${ENVIRONMENT:-development}
+      DATABASE_URL: postgresql://redoak:${POSTGRES_PASSWORD:-redoak_dev_password}@db:5432/redoak
+      JWT_SECRET: ${JWT_SECRET:-change-me-to-a-long-random-string-at-least-32-chars}
+      # "demo" = clearly-labelled synthetic data (no key needed). Use "twelvedata" with a key for real data.
+      MARKET_DATA_PROVIDER: ${MARKET_DATA_PROVIDER:-demo}
+      MARKET_DATA_API_KEY: ${MARKET_DATA_API_KEY:-}
+      LLM_API_KEY: ${LLM_API_KEY:-}
+      CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:5173,http://localhost:8080}
+    ports:
+      - "8000:8000"
+    volumes:
+      - mlmodels:/app/app/ml/models
+
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        VITE_API_URL: ""   # same-origin; nginx proxies /api to the backend
+    depends_on:
+      - backend
+    ports:
+      - "5173:80"
+
+volumes:
+  pgdata:
+  mlmodels:

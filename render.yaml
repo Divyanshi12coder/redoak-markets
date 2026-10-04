@@ -1,0 +1,34 @@
+# Render blueprint: managed PostgreSQL + the FastAPI backend.
+# Deploy the frontend separately on Vercel (see README) and set CORS_ORIGINS to its URL.
+databases:
+  - name: redoak-db
+    plan: free
+    databaseName: redoak
+    user: redoak
+
+services:
+  - type: web
+    name: redoak-api
+    runtime: docker
+    rootDir: backend
+    plan: free
+    healthCheckPath: /api/health
+    envVars:
+      - key: ENVIRONMENT
+        value: production
+      - key: DATABASE_URL
+        fromDatabase:
+          name: redoak-db
+          property: connectionString
+      - key: JWT_SECRET
+        generateValue: true
+      - key: CORS_ORIGINS
+        sync: false            # e.g. https://your-app.vercel.app
+      - key: MARKET_DATA_PROVIDER
+        value: twelvedata
+      - key: MARKET_DATA_API_KEY
+        sync: false
+      - key: LLM_API_KEY
+        sync: false            # optional
+      - key: ML_PERSIST_MODELS
+        value: "false"         # free-tier disks are ephemeral; models retrain on demand
