@@ -1,0 +1,143 @@
+@import "tailwindcss";
+@import "@fontsource-variable/inter";
+@import "@fontsource-variable/fraunces";
+
+/*
+  RedOak palette. All default Tailwind colours are removed so only reds, dark greens and
+  neutrals can be used anywhere in the UI.
+*/
+@theme {
+  --color-*: initial;
+  --color-transparent: transparent;
+  --color-current: currentColor;
+  --color-white: #ffffff;
+
+  /* dark greens: forest, emerald, almost-black */
+  --color-oak-50: #f0f6f2;
+  --color-oak-100: #dcebe2;
+  --color-oak-200: #b6d5c3;
+  --color-oak-300: #86b79c;
+  --color-oak-400: #4f956f;
+  --color-oak-500: #2b7550;
+  --color-oak-600: #1d5d3f;
+  --color-oak-700: #164a32;
+  --color-oak-800: #0f3724;
+  --color-oak-900: #0a2519;
+  --color-oak-950: #06150e;
+
+  /* reds: muted -> crimson -> burgundy -> wine */
+  --color-wine-50: #fbf1f2;
+  --color-wine-100: #f5dde0;
+  --color-wine-200: #ebbbc2;
+  --color-wine-300: #dd8b97;
+  --color-wine-400: #cb5a6b;
+  --color-wine-500: #b53a4d;
+  --color-wine-600: #9a2639;
+  --color-wine-700: #7d1d2d;
+  --color-wine-800: #5f1623;
+  --color-wine-900: #430f19;
+  --color-wine-950: #2a0a10;
+
+  /* neutrals */
+  --color-paper: #f7f5f0;
+  --color-mist: #ecebe5;
+  --color-stone: #d9d7cf;
+  --color-ink: #0d1a13;
+  --color-muted: #55665b;
+
+  --font-sans: "Inter Variable", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-display: "Fraunces Variable", Georgia, "Times New Roman", serif;
+
+  --shadow-card: 0 1px 2px rgb(6 21 14 / 0.05), 0 4px 16px -6px rgb(6 21 14 / 0.08);
+  --shadow-lift: 0 2px 4px rgb(6 21 14 / 0.06), 0 14px 32px -12px rgb(6 21 14 / 0.22);
+
+  --animate-marquee: marquee 48s linear infinite;
+  --animate-shimmer: shimmer 1.6s ease-in-out infinite;
+  --animate-float: float 7s ease-in-out infinite;
+
+  @keyframes marquee {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+  @keyframes shimmer {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+  }
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-6px); }
+  }
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+  body {
+    @apply bg-paper font-sans text-ink antialiased;
+    overflow-x: hidden;
+  }
+  :focus-visible {
+    outline: 2px solid var(--color-oak-500);
+    outline-offset: 2px;
+    border-radius: 6px;
+  }
+  .on-dark :focus-visible { outline-color: var(--color-oak-300); }
+  ::selection { background: var(--color-oak-200); color: var(--color-oak-950); }
+  h1, h2, h3 { text-wrap: balance; }
+  table { border-collapse: collapse; }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    *, *::before, *::after {
+      animation-duration: 0.001ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.001ms !important;
+    }
+  }
+}
+
+@layer components {
+  .container-page { @apply mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8; }
+
+  .btn {
+    @apply inline-flex min-h-11 select-none items-center justify-center gap-2 rounded-xl px-5 py-2.5 text-sm font-semibold
+      transition duration-200 ease-out active:scale-[0.97] disabled:pointer-events-none disabled:opacity-50;
+  }
+  .btn-primary { @apply bg-oak-700 text-white shadow-card hover:bg-oak-600; }
+  .btn-crimson { @apply bg-wine-700 text-white shadow-card hover:bg-wine-600; }
+  .btn-secondary { @apply border border-stone bg-white text-ink hover:border-oak-400 hover:bg-oak-50; }
+  .btn-ghost { @apply text-ink hover:bg-mist; }
+  .btn-on-dark { @apply border border-white/25 bg-white/5 text-white hover:bg-white/15; }
+  .btn-sm { @apply min-h-9 rounded-lg px-3 py-1.5 text-xs; }
+
+  .card { @apply rounded-2xl border border-stone/80 bg-white shadow-card; }
+  .card-hover {
+    @apply relative overflow-hidden transition duration-300 ease-out hover:-translate-y-0.5 hover:border-oak-300 hover:shadow-lift;
+  }
+  /* subtle contextual accent line that draws in on hover */
+  .card-hover::before {
+    content: "";
+    @apply absolute inset-x-0 top-0 h-0.5 origin-left scale-x-0 transition-transform duration-500 ease-out;
+    background: var(--accent, var(--color-oak-500));
+  }
+  .card-hover:hover::before, .card-hover:focus-within::before { @apply scale-x-100; }
+  .card-up { --accent: var(--color-oak-500); }
+  .card-down { --accent: var(--color-wine-500); }
+
+  .eyebrow { @apply text-xs font-semibold uppercase tracking-[0.14em] text-oak-600; }
+  .skeleton {
+    @apply rounded-lg bg-mist;
+    background-image: linear-gradient(90deg, transparent 0%, rgb(255 255 255 / 0.7) 50%, transparent 100%);
+    background-size: 200% 100%;
+    animation: var(--animate-shimmer);
+  }
+  .tabular { font-variant-numeric: tabular-nums; }
+  .chip { @apply inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[11px] font-semibold tracking-wide; }
+  .scrollbar-thin { scrollbar-width: thin; scrollbar-color: var(--color-stone) transparent; }
+}
+
+@utility text-up { color: var(--color-oak-600); }
+@utility text-down { color: var(--color-wine-600); }
+@utility text-up-dark { color: var(--color-oak-300); }
+@utility text-down-dark { color: var(--color-wine-300); }

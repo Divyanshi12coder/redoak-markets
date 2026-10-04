@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="RedOak Markets">
+  <defs>
+    <linearGradient id="c" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#2f8a5a"/>
+      <stop offset="1" stop-color="#14452d"/>
+    </linearGradient>
+  </defs>
+  <rect width="64" height="64" rx="15" fill="#0a1f15"/>
+  <g fill="url(#c)">
+    <circle cx="32" cy="23" r="13.5"/>
+    <circle cx="21.5" cy="31" r="9.5"/>
+    <circle cx="42.5" cy="31" r="9.5"/>
+  </g>
+  <path d="M28.6 53 30.4 37h3.2l1.8 16z" fill="#a82a3b"/>
+  <path d="M25 53h14" stroke="#a82a3b" stroke-width="2.6" stroke-linecap="round"/>
+  <path d="M16.5 35 24.5 28.5 30 32 38 21 46.5 15.5" fill="none" stroke="#f7f5f0" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="46.5" cy="15.5" r="3" fill="#d8566a" stroke="#0a1f15" stroke-width="1.2"/>
+</svg>
